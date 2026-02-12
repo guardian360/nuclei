@@ -86,6 +86,7 @@ func executeWithRuntime(runtime *goja.Runtime, p *goja.Program, args *ExecuteArg
 		}
 		runtime.RemoveContextValue("executionId")
 		runtime.RemoveContextValue("ctx")
+		libs.RemoveDialContext(opts.ExecutionId)
 	}()
 
 	// TODO(dwisiswant0): remove this once we get the RCA.
@@ -205,7 +206,7 @@ func executeWithPoolingProgram(p *goja.Program, args *ExecuteArgs, opts *Execute
 	// "response == true" can compare types correctly.
 	usesExport := opts.Source != nil && CanRunAsIIFE(*opts.Source)
 	if usesExport {
-		if val.Export() != nil {
+		if val != nil && val.Export() != nil {
 			buff.WriteString(stringify(val, runtime))
 		}
 		return runtime.ToValue(buff.String()), nil
